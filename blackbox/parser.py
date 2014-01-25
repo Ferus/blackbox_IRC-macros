@@ -4,9 +4,9 @@
 # Offical IRC channel: irc://irc.datnode.net/hacking
 # Offical repository on github: https://github.com/proxypoke/blackbox_IRC-macros
 #
-# This program, hereafter called "blackbox", 
-# is Free Software under the terms of the 
-# GNU General Public license, which can be found at 
+# This program, hereafter called "blackbox",
+# is Free Software under the terms of the
+# GNU General Public license, which can be found at
 # http://www.gnu.org/copyleft/gpl.html.
 
 '''blackbox.parser - a small, but complete IRC parser
@@ -31,7 +31,10 @@ class Event(object):
     def __init__(self, prefix, command, params):
         self.prefix = prefix
         self.command = command
-        self.params = params
+        self.params = [params[0]]
+        if len(params) >= 2:
+            for param in params[-1].split(' '):
+                self.params.append(param)
         self.time = time.time()
 
     def __str__(self):
@@ -46,11 +49,10 @@ class Event(object):
 
     def __repr__(self):
         '''The raw representation of the message.'''
-        params = ' '.join(self.params)
         msg = ' '.join(
                 [ self.prefix
                 , self.command
-                , params
+                , ' '.join(self.params)
                 ])
         return msg
 
@@ -100,7 +102,7 @@ class Event(object):
 
 
 class NumericReply(Event):
-    
+
     '''A special subclass of Event. It prevents the numerous numeric
     replies to be turned into single events each.
     '''
@@ -124,7 +126,7 @@ class Parser(object):
         '''Gets a list of all known events.
         '''
         return list(self._events)
-    
+
     def numreplies(self):
         '''Get a list of all known numeric replies.
         '''
@@ -152,7 +154,7 @@ class Parser(object):
         command = s.pop(0)
 
         params = self._parseParams(s)
-        
+
         return self._generateEvent(prefix, command, params)
 
     @staticmethod
