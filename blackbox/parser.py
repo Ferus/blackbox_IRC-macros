@@ -33,6 +33,8 @@ class Event(object):
         self.command = command
         self.params = [params[0]]
         if len(params) >= 2:
+            for param in params[1:-1]:
+                self.params.append(param)
             for param in params[-1].split(' '):
                 self.params.append(param)
         self.time = time.time()
