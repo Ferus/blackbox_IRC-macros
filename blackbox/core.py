@@ -402,7 +402,7 @@ class Core(object):
             target -- Either a user or a channel (prefixed with the usual hash)
             message -- The message to send
         '''
-        self.send("NOTICE {0}, {1}".format(target, message))
+        self.send("NOTICE {0} :{1}".format(target, message))
 
 
     def serverpassword(self, password):
